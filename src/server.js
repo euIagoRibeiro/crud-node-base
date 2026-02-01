@@ -16,6 +16,32 @@ app.get('/', (req, res) => {
     });
 });
 
+app.get('/usuarios', (req, res) => {
+    res.json(usuarios);
+});
+
+app.post('/usuarios', (req, res) => {
+    
+    const { nome, email } = req.body;
+
+    if (!nome && !email ) return res.status(400).send({ erro: "Nome e email são obrigatórios!"});
+
+    if (!nome) return res.status(400).send({ erro: "Nome é obrigatório!"});
+
+    if (!email) return res.status(400).send({ erro: "Email é obrigatório!"});
+
+    const emailExiste = usuarios.find(user => user.email === email);
+
+    if (emailExiste) return res.status(409).send({ erro: "Este email ja está cadastrado!"});
+
+    const novoUsuario = { nome, email };
+    usuarios.push(novoUsuario);
+
+    console.log("Cadastrado: ", novoUsuario);
+    res.status(201).json(novoUsuario);
+
+});
+
 app.listen(PORT, () => {
     console.log(`----------------------------------------------`);
     console.log(`🚀 Server running at http://localhost:${PORT}`);
