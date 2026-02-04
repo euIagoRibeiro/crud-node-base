@@ -7,7 +7,13 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.json());
 
-const usuarios = [];
+const usuarios = [
+    {
+        "nome": "carlos",
+        "email": "carloshenrique@gmail.com"
+    }    
+
+];
 
 app.get('/', (req, res) => {
     res.send({

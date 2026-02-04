@@ -9,10 +9,52 @@ async function listarUsuarios() {
     lista.innerHTML = '';
 
     usuarios.forEach(usuario => {
+
         const item = document.createElement('li');
-        item.textContent = `${usuario.nome} - ${usuario.email}`;
+
+        const info = document.createElement('span');
+        info.textContent = `${usuario.nome} - ${usuario.email}`;
+
+        const btnDeletar = document.createElement('button');
+        btnDeletar.textContent = "excluir";
+        btnDeletar.style.color = 'red';
+        btnDeletar.style.marginLeft = '10px';
+
+        btnDeletar.onclick = () => deletarUsuario(usuario.email);
+
+        const btnEditar = document.createElement('button');
+        btnEditar.textContent = "Editar";
+        btnEditar.style.marginLeft = '5px';
+
+        btnEditar.onclick = () => editarUsuario(usuario.email);
+
+        item.appendChild(info);
+        item.appendChild(btnEditar);
+        item.appendChild(btnDeletar);
+
         lista.appendChild(item);
     });
+}
+
+async function deletarUsuario(email) {
+    if (confirm(`Tem certeza que quer apagar o ${email}?`)) {
+        await fetch(`${API_URL}/${email}`, { method: 'DELETE'});
+        listarUsuarios();
+    }
+}
+
+async function editarUsuario(email) {
+
+    const novoNome = prompt("insira o novo nome");
+    if (novoNome) {
+        await fetch(`${API_URL}/${email}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nome: novoNome })
+        });
+        listarUsuarios();
+    }
+
 }
 
 async function cadastrarUsuario() {
